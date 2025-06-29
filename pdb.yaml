@@ -1,0 +1,9 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: my-dep-pdb
+spec:
+  minAvailable: 1 # For High-Availability (replicas - 1)
+  selector:
+    matchLabels:
+      app: my-dep
