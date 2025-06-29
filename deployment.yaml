@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: my-dep
+  name: my-dep
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0 # This ensures that no pods are taken down during updates
+      maxSurge: 1 # This allows one extra pod during updates
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-dep
+  template:
+    metadata:
+      labels:
+        app: my-dep
+    spec:
+      containers:
+        - image: sample-app:1.1
+          name: nginx
+          ports:
+            - containerPort: 3001
+          resources:
+            limits:
+              cpu: 1
+              memory: 512Mi
+            requests:
+              cpu: "0.5"
+              memory: 256Mi
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 3001
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 3001
+            initialDelaySeconds: 15
+            periodSeconds: 20
+status: {}
